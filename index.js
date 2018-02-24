@@ -10,6 +10,10 @@ api.use({
   access_token: '7166708691.cbd07d0.c8f07f2fb9ed447ebc803d3bb983e615'
 });
 
+app.get('/', (req, res) => {
+  res.send('it works');
+})
+
 app.get('/user', (req, res) => {
   api.user_search(req.query.user, (err, data) => {
     res.send(data);
