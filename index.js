@@ -31,8 +31,6 @@ app.get('/user/subscribe/:id', (req, res) => {
 
 app.get('/subreturn', (req, res) => {
   console.log('subreturn');
-  // console.dir(req);
-  // masterData.push(req);
   if(req.query['hub.challenge']){
     res.send(req.query['hub.challenge']);
   } else {
@@ -42,7 +40,14 @@ app.get('/subreturn', (req, res) => {
 
 app.get('/data', (req, res) => {
   res.send(masterData);
-})
+});
+
+var alerts = [];
+var checkedComments = {};
+
+app.get('/alerts', (req, res) => {
+  res.send(alerts);
+});
 
 app.get('/refresh', (req, res) => {
   api.user_search('hackthebullyvictim', (err, data) => {
@@ -52,24 +57,26 @@ app.get('/refresh', (req, res) => {
         api.comments(media.id.split('_')[0], (err, comments) => {
           console.log(comments);
           comments.forEach((comment) => {
-            var options = {
-              url: 'http://cdfaa975.ngrok.io',
-              headers: {
-                'message': comment.text
-              }
-            };
-            console.log(comment.text);
-            request(options, (err, res, body) => {
-              console.log(body);
-            });
+            if (!checkedComments[comment.id]){
+              checkedComments[comment.id] = 1;
+              var options = {
+                url: 'http://cdfaa975.ngrok.io',
+                headers: {
+                  'message': comment.text
+                }
+              };
+              console.log(comment.text);
+              request(options, (err, res, body) => {
+                console.log(body);
+                if (body) {
+                  alerts.push(comment);
+                }
+              });
+            }
           });
         });
       });
     });
   });
   res.send('ok');
-});
-
-app.get('alerts', (req, res) => {
-
 });
