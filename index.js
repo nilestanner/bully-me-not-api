@@ -8,7 +8,7 @@ var app = require('express')();
 var masterData = [];
 app.listen(process.env.PORT || 9000, () => {console.log('app has started')})
 api.use({
-  access_token: '7166708691.cbd07d0.c8f07f2fb9ed447ebc803d3bb983e615'
+  access_token: '7167628015.cbd07d0.058bab3c489b49d29c3fd919389bbea2'
 });
 
 app.get('/', (req, res) => {
@@ -23,6 +23,7 @@ app.get('/user', (req, res) => {
 
 app.get('/user/subscribe/:id', (req, res) => {
   api.add_user_subscription('https://bully-me-not.herokuapp.com/subreturn', (err, data) => {
+    console.log(data);
     masterData.push(data);
     res.send('ok');
   })
@@ -35,6 +36,19 @@ app.get('/subreturn', (req, res) => {
 app.get('/data', (req, res) => {
   res.send(masterData);
 })
+
+
+
+// api.user_search('hackthebullyvictim', (err, data) => {
+//   // console.dir(data);
+//   api.user_media_recent(data[0].id, (err, data) => {
+//     console.dir(data);
+//   });
+// });
+
+app.get('alerts', (req, res) => {
+
+});
 
 
 
