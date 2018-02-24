@@ -76,9 +76,10 @@ app.get('/refresh', (req, res) => {
                       console.log(err);
                     }
                     console.log('bullying or not', body);
-                    if (body == 1) {
+                    if (body == 1 || body == 2) {
                       comment.thumbnail = media.images.thumbnail
                       comment.posturl = media.link
+                      comment.severity = body;
                       alerts.push(comment);
                     }
                   });
