@@ -50,33 +50,35 @@ app.get('/alerts', (req, res) => {
 });
 
 app.get('/refresh', (req, res) => {
-  api.user_search('hackthebullyvictim', (err, data) => {
-    api.user_media_recent(data[0].id, (err, medias) => {
-      medias.forEach((media) => {
-        console.dir(media.id);
-        api.comments(media.id.split('_')[0], (err, comments) => {
-          console.log(comments);
-          comments.forEach((comment) => {
-            if (!checkedComments[comment.id]){
-              checkedComments[comment.id] = 1;
-              var options = {
-                url: 'http://cdfaa975.ngrok.io',
-                headers: {
-                  'message': comment.text
-                }
-              };
-              console.log(comment.text);
-              request(options, (err, res, body) => {
-                console.log(body);
-                if (body) {
-                  alerts.push(comment);
-                }
-              });
-            }
+  // var promise = new Promise((resolve, reject) => {
+    api.user_search('hackthebullyvictim', (err, data) => {
+      api.user_media_recent(data[0].id, (err, medias) => {
+        medias.forEach((media) => {
+          console.dir(media.id);
+          api.comments(media.id.split('_')[0], (err, comments) => {
+            console.log(comments);
+            comments.forEach((comment) => {
+              if (!checkedComments[comment.id]){
+                checkedComments[comment.id] = 1;
+                var options = {
+                  url: `https://cyberbullyingornot.herokuapp.com?message=${comment.text}`
+                };
+                console.log(comment.text);
+                request(options, (err, res, body) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  console.log('bullying or not', res);
+                  if (body) {
+                    alerts.push(comment);
+                  }
+                });
+              }
+            });
           });
         });
       });
     });
-  });
+  // });
   res.send('ok');
 });
