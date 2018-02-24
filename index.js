@@ -61,7 +61,10 @@ app.get('/refresh', (req, res) => {
               if (!checkedComments[comment.id]){
                 checkedComments[comment.id] = 1;
                 var options = {
-                  url: `https://cyberbullyingornot.herokuapp.com?message=${comment.text}`
+                  url: `https://cyberbullyingornot.herokuapp.com`,
+                  qs: {
+                    message: comment.text
+                  }
                 };
                 console.log(comment.text);
                 request(options, (err, res, body) => {
