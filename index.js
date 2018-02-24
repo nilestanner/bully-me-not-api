@@ -54,7 +54,7 @@ app.get('/refresh', (req, res) => {
     api.user_search('hackthebullyvictim', (err, data) => {
       api.user_media_recent(data[0].id, (err, medias) => {
         medias.forEach((media) => {
-          console.dir(media.id);
+          console.dir(media);
           api.comments(media.id.split('_')[0], (err, comments) => {
             console.log(comments);
             comments.forEach((comment) => {
@@ -68,8 +68,10 @@ app.get('/refresh', (req, res) => {
                   if (err) {
                     console.log(err);
                   }
-                  console.log('bullying or not', res);
+                  console.log('bullying or not', body);
                   if (body) {
+                    comment.thumbnail = media.images.thumbnail
+                    comment.posturl = media.link
                     alerts.push(comment);
                   }
                 });
