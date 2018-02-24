@@ -5,7 +5,7 @@ var app = require('express')();
 //   client_secret: '7c650993f2414b60a18092294246598a'
 // });
 //https://www.instagram.com/oauth/authorize/?client_id=cbd07d0a3dd944038c6d877fb1aaf53a&redirect_uri=http://localhost&response_type=code&scope=public_content
-app.listen(9000, () => {console.log('app has started')})
+app.listen(process.env.PORT, () => {console.log('app has started')})
 api.use({
   access_token: '7166708691.cbd07d0.c8f07f2fb9ed447ebc803d3bb983e615'
 });
