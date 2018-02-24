@@ -24,15 +24,16 @@ app.get('/user', (req, res) => {
 app.get('/user/subscribe/:id', (req, res) => {
   api.add_user_subscription('https://bully-me-not.herokuapp.com/subreturn', (err, data) => {
     masterData.push(data);
+    res.send('ok');
   })
 });
 
-app.get('subreturn', (req, res) => {
+app.get('/subreturn', (req, res) => {
   masterData.push(req);
 });
 
-app.get('data', (req, res) => {
-  res.send(data);
+app.get('/data', (req, res) => {
+  res.send(masterData);
 })
 
 
