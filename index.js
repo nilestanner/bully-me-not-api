@@ -50,40 +50,51 @@ app.get('/alerts', (req, res) => {
 });
 
 app.get('/refresh', (req, res) => {
-  // var promise = new Promise((resolve, reject) => {
-    api.user_search('hackthebullyvictim', (err, data) => {
-      api.user_media_recent(data[0].id, (err, medias) => {
-        medias.forEach((media) => {
-          console.dir(media);
-          api.comments(media.id.split('_')[0], (err, comments) => {
-            console.log(comments);
-            comments.forEach((comment) => {
-              if (!checkedComments[comment.id]){
-                checkedComments[comment.id] = 1;
-                var options = {
-                  url: `https://cyberbullyingornot.herokuapp.com`,
-                  qs: {
-                    message: comment.text
-                  }
-                };
-                console.log(comment.text);
-                request(options, (err, res, body) => {
-                  if (err) {
-                    console.log(err);
-                  }
-                  console.log('bullying or not', body);
-                  if (body) {
-                    comment.thumbnail = media.images.thumbnail
-                    comment.posturl = media.link
-                    alerts.push(comment);
-                  }
-                });
-              }
+  try {
+    var promise = new Promise((resolve, reject) => {
+      api.user_search('hackthebullyvictim', (err, data) => {
+        console.log('error', err);
+        console.log('users',data);
+        api.user_media_recent(data[0].id, (err, medias) => {
+          promises = []
+          medias.forEach((media) => {
+            console.dir(media);
+            api.comments(media.id.split('_')[0], (err, comments) => {
+              console.log(comments);
+              promises.push(...comments.map((comment) => {
+                if (!checkedComments[comment.id]){
+                  checkedComments[comment.id] = 1;
+                  var options = {
+                    url: `https://cyberbullyingornot.herokuapp.com`,
+                    qs: {
+                      message: comment.text
+                    }
+                  };
+                  console.log(comment.text);
+                  return request(options, (err, res, body) => {
+                    if (err) {
+                      console.log(err);
+                    }
+                    console.log('bullying or not', body);
+                    if (body == 1) {
+                      comment.thumbnail = media.images.thumbnail
+                      comment.posturl = media.link
+                      alerts.push(comment);
+                    }
+                  });
+                }
+              }));
+
             });
           });
+          Promise.all(promises).then(() => {
+              res.send('ok');
+          })
         });
       });
     });
-  // });
-  res.send('ok');
+  }
+  catch (ex) {
+    console.dir(ex);
+  }
 });
