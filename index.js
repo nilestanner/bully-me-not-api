@@ -1,5 +1,6 @@
 var api = require('instagram-node').instagram();
 var app = require('express')();
+var request = require('request');
 
 //https://www.instagram.com/oauth/authorize/?client_id=cbd07d0a3dd944038c6d877fb1aaf53a&redirect_uri=http://localhost&response_type=code&scope=public_content
 var masterData = [];
@@ -12,13 +13,6 @@ app.listen(process.env.PORT || 9000, () => {console.log('app has started')})
 api.use({
   access_token: '7167628015.cbd07d0.058bab3c489b49d29c3fd919389bbea2'
 });
-// api.add_user_subscription('https://bully-me-not-nilestanner.c9users.io:8080/subreturn', (err, data) => {
-//   if(err) {
-//     console.log(err);
-//   } else {
-//     console.log(data);
-//   }
-// });
 
 
 app.get('/', (req, res) => {
@@ -32,7 +26,7 @@ app.get('/user', (req, res) => {
 });
 
 app.get('/user/subscribe/:id', (req, res) => {
-  
+
 });
 
 app.get('/subreturn', (req, res) => {
@@ -57,13 +51,24 @@ app.get('/refresh', (req, res) => {
         console.dir(media.id);
         api.comments(media.id.split('_')[0], (err, comments) => {
           console.log(comments);
-        })
+          comments.forEach((comment) => {
+            var options = {
+              url: 'http://cdfaa975.ngrok.io',
+              headers: {
+                'message': comment.text
+              }
+            };
+            console.log(comment.text);
+            request(options, (err, res, body) => {
+              console.log(body);
+            });
+          });
+        });
       });
     });
   });
   res.send('ok');
 });
-
 
 app.get('alerts', (req, res) => {
 
