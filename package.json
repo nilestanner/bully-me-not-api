@@ -13,9 +13,6 @@
   "dependencies": {
     "express": "^4.16.2",
     "instagram-node": "^0.5.8",
-    "ngrok": "^2.2.26",
-    "node-tweet-stream": "^2.0.3",
-    "request": "^2.83.0",
-    "twit": "^2.2.9"
+    "request": "^2.83.0"
   }
 }
